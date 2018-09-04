@@ -1,2 +1,1 @@
-# adafruit_ssd1306
-Library and example for adafruit ssd1306
+link link: https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf
