@@ -1,33 +1,31 @@
+
 /*********************************************************************
 This is an example for our Monochrome OLEDs based on SSD1306 drivers
-
   Pick one up today in the adafruit shop!
   ------> http://www.adafruit.com/category/63_98
-
 This example is for a 128x64 size display using I2C to communicate
 3 pins are required to interface (2 I2C and one reset)
-
 Adafruit invests time and resources providing this open source code, 
 please support Adafruit and open-source hardware by purchasing 
 products from Adafruit!
-
 Written by Limor Fried/Ladyada  for Adafruit Industries.  
 BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
 
-#include "Adafruit_GFX.h"
-#include "Adafruit_SSD1306.h"
+#include "SSD1306_128x32.h"
+
+SYSTEM_MODE(MANUAL);
 
 #define OLED_RESET D4
-Adafruit_SSD1306 display(OLED_RESET);
+SSD1306_128x32 display(OLED_RESET);
 
 #define NUMFLAKES 10
 #define XPOS 0
 #define YPOS 1
 #define DELTAY 2
 
-int random(int maxRand) {
+int randomNum(int maxRand) {
     return rand() % maxRand;
 }
 
@@ -51,7 +49,11 @@ static const unsigned char logo16_glcd_bmp[] =
   0B01110000, 0B01110000,
   0B00000000, 0B00110000 };
 
-#if (SSD1306_LCDHEIGHT != 64)
+// #if (SSD1306_LCDHEIGHT != 64)
+// #error("Height incorrect, please fix Adafruit_SSD1306.h!");
+// #endif
+
+#if (SSD1306_LCDHEIGHT != 32)
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
@@ -59,7 +61,8 @@ void setup()   {
   Serial.begin(9600);
 
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3D);  // initialize with the I2C addr 0x3D (for the 128x64)
+  //display.begin(SSD1306_SWITCHCAPVCC, 0x3D);  // initialize with the I2C addr 0x3D (for the 128x64)
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
   // init done
   
   display.display(); // show splashscreen
@@ -168,9 +171,9 @@ void testdrawbitmap(const uint8_t *bitmap, uint8_t w, uint8_t h) {
  
   // initialize
   for (uint8_t f=0; f< NUMFLAKES; f++) {
-    icons[f][XPOS] = random(display.width());
+    icons[f][XPOS] = randomNum(display.width());
     icons[f][YPOS] = 0;
-    icons[f][DELTAY] = random(5) + 1;
+    icons[f][DELTAY] = randomNum(5) + 1;
     
     Serial.print("x: ");
     Serial.print(icons[f][XPOS], DEC);
@@ -195,9 +198,9 @@ void testdrawbitmap(const uint8_t *bitmap, uint8_t w, uint8_t h) {
       icons[f][YPOS] += icons[f][DELTAY];
       // if its gone, reinit
       if (icons[f][YPOS] > display.height()) {
-	icons[f][XPOS] = random(display.width());
+	icons[f][XPOS] = randomNum(display.width());
 	icons[f][YPOS] = 0;
-	icons[f][DELTAY] = random(5) + 1;
+	icons[f][DELTAY] = randomNum(5) + 1;
       }
     }
    }
@@ -347,5 +350,3 @@ void testscrolltext(void) {
   delay(2000);
   display.stopscroll();
 }
-
-
